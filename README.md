@@ -53,7 +53,7 @@ flowchart LR
 ### 1. Clone and install
 
 ```bash
-cd William
+cd Nisarg
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -124,9 +124,9 @@ Add to `.cursor/mcp.json` (see [`mcp_config.example.json`](mcp_config.example.js
 {
   "mcpServers": {
     "fastapi-docs-kb": {
-      "command": "/Users/you/William/.venv/bin/python",
+      "command": "/Users/you/Nisarg/.venv/bin/python",
       "args": ["-m", "src.mcp_server"],
-      "cwd": "/Users/you/William",
+      "cwd": "/Users/you/Nisarg",
       "env": { "...": "from .env" }
     }
   }
@@ -142,7 +142,7 @@ Same pattern under `claude_desktop_config.json` → `mcpServers`.
 ## Project layout
 
 ```
-William/
+Nisarg/
 ├── sql/schema.sql          # pgvector table + match RPC
 ├── src/
 │   ├── ingest.py           # CLI ingestion
@@ -159,30 +159,6 @@ William/
 └── scripts/demo.sh
 ```
 
-## Loom walkthrough script (5–10 min)
-
-1. **Intro** (30s): Name, role interest, what you built in one sentence.
-2. **Architecture** (1m): Show diagram above — ingest → Supabase → RAG → API/MCP.
-3. **Supabase** (1m): Table + `match_doc_chunks` in SQL editor; row count.
-4. **Ingest** (30s): Terminal `python -m src.ingest` snippet.
-5. **API demo** (2m): `/docs` → POST `/ask` with path params question → point at `citations` in JSON.
-6. **Eval** (2m): Run `eval/run_eval.py`, explain Hit@5 / MRR / why golden URLs matter.
-7. **MCP demo** (2m): Cursor → `ask_docs` tool → show citation markdown.
-8. **Decisions & next** (1m): Tradeoffs table + "day one" section below.
-
-## What I'd build next (day one on the job)
-
-1. **Incremental ingest** with content hashing and delete-stale-chunks job.  
-2. **Hybrid retrieval** (BM25 + vector) and cross-encoder reranker before Claude.  
-3. **Managed agent session** (Option A) with a `search` tool + citation formatter as first-class agent tools.  
-4. **Production eval pipeline** — nightly eval, regression alerts when Hit@k drops.  
-5. **Customer-facing Copilot** (Option B) — Slack bot or Cowork skill wrapping the same MCP tools.
-
-## With more time
-
-- Auth on `/ask`, rate limits, request tracing (Langfuse/OpenTelemetry)
-- Parent-document retrieval (store page ID, return full section)
-- RAGAS or DeepEval for faithfulness/context precision at CI time
 - Multi-tenant collections per customer docs site
 
 ## License
