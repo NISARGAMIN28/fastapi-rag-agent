@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "fastapi-docs-kb": {
+      "command": "python",
+      "args": ["-m", "src.mcp_server"],
+      "cwd": "/ABSOLUTE/PATH/TO/William",
+      "env": {
+        "SUPABASE_URL": "your-url",
+        "SUPABASE_SERVICE_KEY": "your-key",
+        "OPENAI_API_KEY": "sk-...",
+        "ANTHROPIC_API_KEY": "sk-ant-..."
+      }
+    }
+  }
+}

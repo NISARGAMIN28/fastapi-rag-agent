@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FastAPI Docs · RAG Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0c0f14;
+      --surface: #141a24;
+      --surface-2: #1a2230;
+      --border: #2a3548;
+      --text: #e8ecf4;
+      --muted: #8b9bb8;
+      --accent: #00d4aa;
+      --accent-dim: rgba(0, 212, 170, 0.12);
+      --danger: #f87171;
+      --radius: 12px;
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "DM Sans", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 212, 170, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 212, 170, 0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black, transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+
+    header {
+      margin-bottom: 2rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid rgba(0, 212, 170, 0.25);
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+
+    .badge::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    h1 {
+      font-size: clamp(1.75rem, 4vw, 2.25rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+    }
+
+    h1 span { color: var(--accent); }
+
+    .subtitle {
+      color: var(--muted);
+      margin-top: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .subtitle a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .subtitle a:hover { text-decoration: underline; }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    .stat {
+      font-size: 0.8rem;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.85rem;
+      border-radius: 8px;
+    }
+
+    .stat strong { color: var(--text); }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 1rem 1.1rem;
+      font-family: inherit;
+      font-size: 1rem;
+      color: var(--text);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      resize: vertical;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .chip {
+      font-size: 0.8rem;
+      color: var(--muted);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .chip:hover {
+      color: var(--accent);
+      border-color: rgba(0, 212, 170, 0.4);
+      background: var(--accent-dim);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    button#go {
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--bg);
+      background: var(--accent);
+      border: none;
+      padding: 0.75rem 1.75rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+    }
+
+    button#go:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(0, 212, 170, 0.35);
+    }
+
+    button#go:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .toggle input { accent-color: var(--accent); }
+
+    .answer-card h2 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
+
+    #out {
+      font-size: 0.95rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    #out.empty { color: var(--muted); font-style: italic; }
+
+    #out.loading {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--muted);
+    }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #out .err { color: var(--danger); }
+
+    #out h2, #out h3 {
+      color: var(--text);
+      font-size: 1.05rem;
+      margin: 1rem 0 0.5rem;
+    }
+
+    #out h2:first-child { margin-top: 0; }
+
+    #out code, #out pre {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.82rem;
+      background: var(--surface-2);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+    }
+
+    .sources { margin-top: 1.5rem; }
+
+    .sources h3 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+    }
+
+    .source-list { display: flex; flex-direction: column; gap: 0.5rem; }
+
+    .source-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.85rem 1rem;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .source-item:hover {
+      border-color: rgba(0, 212, 170, 0.35);
+      background: var(--accent-dim);
+    }
+
+    .source-num {
+      flex-shrink: 0;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--accent-dim);
+      width: 1.75rem;
+      height: 1.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+    }
+
+    .source-body { min-width: 0; }
+
+    .source-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .source-meta {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 0.15rem;
+    }
+
+    .sim {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="wrap">
+    <header>
+      <div class="badge">RAG · Citations · Free local stack</div>
+      <h1>FastAPI <span>Docs</span> Assistant</h1>
+      <p class="subtitle">
+        Grounded answers from
+        <a href="https://fastapi.tiangolo.com" target="_blank" rel="noopener">fastapi.tiangolo.com</a>
+        with source citations.
+      </p>
+      <div class="stats" id="stats">
+        <span class="stat">Loading status…</span>
+      </div>
+    </header>
+
+    <section class="card">
+      <label for="q">Your question</label>
+      <textarea id="q" placeholder="Ask anything about FastAPI…">How do I declare path parameters in FastAPI?</textarea>
+      <div class="chips" id="chips"></div>
+      <div class="actions">
+        <button type="button" id="go">Ask</button>
+        <label class="toggle">
+          <input type="checkbox" id="fast" />
+          Retrieval only
+        </label>
+      </div>
+    </section>
+
+    <section class="card answer-card">
+      <h2>Answer</h2>
+      <div id="out" class="empty">Press Ask or pick an example above.</div>
+      <div id="cit" class="sources"></div>
+    </section>
+
+    <footer>Docs RAG demo · local embeddings · eval in /eval</footer>
+  </div>
+
+  <script>
+    const API = window.location.origin;
+    const EXAMPLES = [
+      "How do I use dependency injection?",
+      "How do I validate request bodies with Pydantic?",
+      "How do I configure CORS?",
+      "How do I test with TestClient?",
+      "What are background tasks?",
+    ];
+
+    const chips = document.getElementById("chips");
+    EXAMPLES.forEach((q) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "chip";
+      b.textContent = q;
+      b.onclick = () => {
+        document.getElementById("q").value = q;
+        ask();
+      };
+      chips.appendChild(b);
+    });
+
+    function simpleMarkdown(text) {
+      return text
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+        .replace(/^## (.+)$/gm, "<h2>$1</h2>")
+        .replace(/^### (.+)$/gm, "<h3>$1</h3>")
+        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+        .replace(/`([^`]+)`/g, "<code>$1</code>")
+        .replace(/\n/g, "<br>");
+    }
+
+    async function loadHealth() {
+      const el = document.getElementById("stats");
+      try {
+        const r = await fetch(API + "/health");
+        const d = await r.json();
+        el.innerHTML = `
+          <span class="stat"><strong>${d.chunks_indexed}</strong> chunks</span>
+          <span class="stat">source: <strong>${d.knowledge_base || "FastAPI Docs"}</strong></span>
+          <span class="stat">llm: <strong>${d.llm_provider}</strong></span>
+          <span class="stat">store: <strong>${d.vector_store}</strong></span>
+        `;
+      } catch {
+        el.innerHTML = `<span class="stat">API offline — run ./scripts/start-local.sh</span>`;
+      }
+    }
+
+    async function ask() {
+      const q = document.getElementById("q").value.trim();
+      const fast = document.getElementById("fast").checked;
+      const out = document.getElementById("out");
+      const cit = document.getElementById("cit");
+      const btn = document.getElementById("go");
+
+      if (!q) return;
+
+      btn.disabled = true;
+      out.className = "loading";
+      out.innerHTML = '<span class="spinner"></span> Searching documentation…';
+      cit.innerHTML = "";
+
+      try {
+        const res = await fetch(API + "/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question: q, include_generation: !fast }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || res.statusText);
+
+        out.className = "";
+        out.innerHTML = simpleMarkdown(data.answer);
+
+        if (data.citations?.length) {
+          cit.innerHTML = "<h3>Sources</h3><div class='source-list'>" +
+            data.citations.map((c) => {
+              const sim = c.similarity != null
+                ? `<span class="sim">${(c.similarity * 100).toFixed(0)}% match</span> · `
+                : "";
+              const url = new URL(c.url);
+              return `<a class="source-item" href="${c.url}" target="_blank" rel="noopener">
+                <span class="source-num">${c.index}</span>
+                <div class="source-body">
+                  <div class="source-title">${c.title}</div>
+                  <div class="source-meta">${sim}${url.pathname}</div>
+                </div>
+              </a>`;
+            }).join("") + "</div>";
+        }
+      } catch (e) {
+        out.className = "";
+        out.innerHTML = `<span class="err">${e.message}</span>`;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    document.getElementById("go").onclick = ask;
+    document.getElementById("q").addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) ask();
+    });
+
+    loadHealth();
+  </script>
+</body>
+</html>

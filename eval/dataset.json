@@ -1,0 +1,95 @@
+[
+  {
+    "id": "q01",
+    "question": "How do I declare a path parameter in FastAPI?",
+    "expected_urls": ["https://fastapi.tiangolo.com/tutorial/path-params/"],
+    "reference_answer": "Use curly braces in the path and declare the parameter with a type annotation."
+  },
+  {
+    "id": "q02",
+    "question": "What is the difference between Query and Path in FastAPI?",
+    "expected_urls": [
+      "https://fastapi.tiangolo.com/tutorial/query-params/",
+      "https://fastapi.tiangolo.com/tutorial/path-params/"
+    ],
+    "reference_answer": "Path parameters are in the URL path; query parameters come after ? in the URL."
+  },
+  {
+    "id": "q03",
+    "question": "How do I return a JSON response with a custom status code?",
+    "expected_urls": ["https://fastapi.tiangolo.com/tutorial/response-status-code/"],
+    "reference_answer": "Use Response or JSONResponse with status_code, or set status_code on the route decorator."
+  },
+  {
+    "id": "q04",
+    "question": "How does dependency injection work in FastAPI?",
+    "expected_urls": ["https://fastapi.tiangolo.com/tutorial/dependencies/"],
+    "reference_answer": "Use Depends() on parameters; FastAPI resolves dependencies before the route handler runs."
+  },
+  {
+    "id": "q05",
+    "question": "How do I validate request body data with Pydantic models?",
+    "expected_urls": ["https://fastapi.tiangolo.com/tutorial/body/"],
+    "reference_answer": "Use a Pydantic BaseModel as a parameter; FastAPI validates JSON and returns 422 on errors."
+  },
+  {
+    "id": "q06",
+    "question": "How do I upload files in FastAPI?",
+    "expected_urls": ["https://fastapi.tiangolo.com/tutorial/request-files/"],
+    "reference_answer": "Use File and UploadFile from fastapi as parameters."
+  },
+  {
+    "id": "q07",
+    "question": "What is BackgroundTasks used for?",
+    "expected_urls": ["https://fastapi.tiangolo.com/tutorial/background-tasks/"],
+    "reference_answer": "Schedule work after returning a response without blocking the client."
+  },
+  {
+    "id": "q08",
+    "question": "How do I add middleware to a FastAPI application?",
+    "expected_urls": ["https://fastapi.tiangolo.com/tutorial/middleware/"],
+    "reference_answer": "Use app.add_middleware() with a Starlette middleware class."
+  },
+  {
+    "id": "q09",
+    "question": "How do I secure routes with OAuth2?",
+    "expected_urls": ["https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/"],
+    "reference_answer": "Use OAuth2PasswordBearer and a get_current_user dependency."
+  },
+  {
+    "id": "q10",
+    "question": "How do I run FastAPI with async def endpoints?",
+    "expected_urls": ["https://fastapi.tiangolo.com/async/"],
+    "reference_answer": "Define path operations with async def and use async libraries for I/O."
+  },
+  {
+    "id": "q11",
+    "question": "How do I configure CORS in FastAPI?",
+    "expected_urls": ["https://fastapi.tiangolo.com/tutorial/cors/"],
+    "reference_answer": "Add CORSMiddleware via app.add_middleware."
+  },
+  {
+    "id": "q12",
+    "question": "What is OpenAPI and how does FastAPI use it?",
+    "expected_urls": ["https://fastapi.tiangolo.com/features/"],
+    "reference_answer": "FastAPI auto-generates OpenAPI schema and serves /docs and /redoc."
+  },
+  {
+    "id": "q13",
+    "question": "How do I use WebSockets in FastAPI?",
+    "expected_urls": ["https://fastapi.tiangolo.com/advanced/websockets/"],
+    "reference_answer": "Accept a WebSocket parameter, call accept(), then send/receive in a loop."
+  },
+  {
+    "id": "q14",
+    "question": "How do I test FastAPI applications with TestClient?",
+    "expected_urls": ["https://fastapi.tiangolo.com/tutorial/testing/"],
+    "reference_answer": "Use fastapi.testclient.TestClient with pytest."
+  },
+  {
+    "id": "q15",
+    "question": "How do I deploy FastAPI with Docker?",
+    "expected_urls": ["https://fastapi.tiangolo.com/deployment/docker/"],
+    "reference_answer": "Containerize with uvicorn as CMD and expose the app port."
+  }
+]
